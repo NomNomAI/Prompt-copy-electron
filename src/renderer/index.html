@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Prompt Copy</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="titlebar">
+        <i class="fas fa-cog settings-icon"></i>
+        <div class="window-controls">
+            <button class="control-button minimize" style="background: #ffbd2e"></button>
+            <button class="control-button maximize" style="background: #28c940"></button>
+            <button class="control-button close" style="background: #ff5f57"></button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="prompt-area">
+            <label>Prompt:</label>
+            <textarea id="promptText"></textarea>
+        </div>
+
+        <div class="checkbox-area">
+            <label>
+                <input type="checkbox" id="scriptFixCheck">
+                Add 'send full script with fix' to prompt
+            </label>
+            <label>
+                <input type="checkbox" id="notReactCheck">
+                Add 'This project is not React, fix code given' to prompt
+            </label>
+        </div>
+
+        <div class="search-area">
+            <input type="text" id="searchInput" placeholder="Search files...">
+        </div>
+
+        <div class="tree-container">
+            <div id="fileTree"></div>
+        </div>
+
+        <div class="button-area">
+            <button id="selectFolderBtn">Select Folder</button>
+            <button id="copyBtn">Copy</button>
+        </div>
+    </div>
+    <script src="index.js"></script>
+</body>
+</html>

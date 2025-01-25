@@ -1,0 +1,51 @@
+{
+ "name": "prompt-copy",
+ "version": "1.0.0",
+ "main": "src/main.js",
+ "scripts": {
+   "start": "electron .",
+   "build": "electron-builder"
+ },
+ "keywords": [
+   "electron",
+   "prompt",
+   "file",
+   "copy",
+   "utility"
+ ],
+ "author": "",
+ "license": "MIT",
+ "licenses": [
+   {
+     "type": "MIT",
+     "url": "https://opensource.org/licenses/MIT"
+   }
+ ],
+ "dependencies": {
+   "@electron/remote": "MIT",
+   "chokidar": "MIT"
+ },
+ "devDependencies": {
+   "electron": "MIT",
+   "electron-builder": "MIT"
+ },
+ "build": {
+   "appId": "com.prompt-copy",
+   "productName": "Prompt Copy",
+   "copyright": "Copyright © 2024",
+   "win": {
+     "target": "nsis",
+     "icon": "build/icon.ico",
+     "signingHashAlgorithms": [],
+     "signAndEditExecutable": false
+   },
+   "nsis": {
+     "oneClick": false,
+     "allowToChangeInstallationDirectory": true,
+     "createDesktopShortcut": true,
+     "createStartMenuShortcut": true,
+     "license": "LICENSE"
+   }
+ },
+ "description": "A desktop application for selecting files and copying their contents with custom prompts. Features include file tree navigation, theme customization, and clipboard integration."
+}
