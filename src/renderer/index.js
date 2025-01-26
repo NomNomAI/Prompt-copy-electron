@@ -74,6 +74,7 @@ class FilePromptApp {
         const folderPath = await ipcRenderer.invoke('select-folder');
         if (!folderPath) return;
         this.currentFolder = folderPath;
+        document.querySelector('.search-area').classList.remove('hidden');
         this.refreshTree();
     }
 
