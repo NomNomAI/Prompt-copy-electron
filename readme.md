@@ -1,3 +1,5 @@
+![{625E91FB-C42E-4EFC-8B10-85F81D47885E}](https://github.com/user-attachments/assets/a5027a86-8bd6-4b21-a171-a747e04b7b9c)
+
 # Prompt Copy
 
 A desktop utility for copying file contents with custom prompts. Easily select files, add prompts, and copy formatted content to clipboard.
