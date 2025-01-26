@@ -1,3 +1,5 @@
+![{C7F11836-1B57-4EA6-88C4-5D08FEEE0F30}](https://github.com/user-attachments/assets/d2fb29cd-81b9-4935-9029-87db557ae6a6)
+
 # Prompt Copy
 
 A desktop utility for copying file contents with custom prompts. Easily select files, add prompts, and copy formatted content to clipboard.
@@ -15,7 +17,7 @@ A desktop utility for copying file contents with custom prompts. Easily select f
 
 ### Development
 ```bash
-git clone https://github.com/yourusername/prompt-copy.git
+git clone https://github.com/NomNomAI/prompt-copy.git
 cd prompt-copy
 npm install
 npm start
