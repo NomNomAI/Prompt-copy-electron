@@ -1,4 +1,4 @@
-![{625E91FB-C42E-4EFC-8B10-85F81D47885E}](https://github.com/user-attachments/assets/a5027a86-8bd6-4b21-a171-a747e04b7b9c)
+![{C7F11836-1B57-4EA6-88C4-5D08FEEE0F30}](https://github.com/user-attachments/assets/d2fb29cd-81b9-4935-9029-87db557ae6a6)
 
 # Prompt Copy
 
