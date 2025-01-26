@@ -17,7 +17,7 @@ A desktop utility for copying file contents with custom prompts. Easily select f
 
 ### Development
 ```bash
-git clone https://github.com/yourusername/prompt-copy.git
+git clone https://github.com/NomNomAI/prompt-copy.git
 cd prompt-copy
 npm install
 npm start
