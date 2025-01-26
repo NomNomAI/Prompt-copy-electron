@@ -5,6 +5,7 @@ const { exec } = require('child_process');
 require('@electron/remote/main').initialize();
 
 let mainWindow;
+let isDialogOpen = false;
 
 function createWindow() {
     // Add cache path configuration
@@ -73,10 +74,17 @@ app.on('activate', () => {
 });
 
 ipcMain.handle('select-folder', async () => {
-    const result = await dialog.showOpenDialog({
-        properties: ['openDirectory']
-    });
-    return result.filePaths[0];
+    if (isDialogOpen) return null;
+
+    try {
+        isDialogOpen = true;
+        const result = await dialog.showOpenDialog({
+            properties: ['openDirectory']
+        });
+        return result.filePaths[0];
+    } finally {
+        isDialogOpen = false;
+    }
 });
 
 ipcMain.handle('read-file', async (event, filePath) => {
