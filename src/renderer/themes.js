@@ -1,4 +1,3 @@
-// themes.js
 const themes = {
   light: {
     name: 'Light',
@@ -30,19 +29,64 @@ const themes = {
       modalBg: 'rgba(0, 0, 0, 0.4)'
     }
   },
-  midnight: {
-    name: 'Midnight',
+  cosmic: {
+    name: 'Cosmic',
     colors: {
-      background: '#0f1419',
-      text: '#c9d1d9',
-      border: '#30363d',
-      highlight: '#58a6ff',
-      button: '#58a6ff',
+      background: '#1a1025',
+      text: '#e2d9f0',
+      border: '#382952',
+      highlight: '#9d4edd',
+      button: '#9d4edd',
       buttonText: '#ffffff',
-      titlebarBg: '#090c10',
-      inputBg: '#161b22',
-      treeHover: '#1c2128',
-      modalBg: 'rgba(0, 0, 0, 0.4)'
+      titlebarBg: '#130a1c',
+      inputBg: '#231533',
+      treeHover: '#2d1b40',
+      modalBg: 'rgba(26, 16, 37, 0.4)'
+    }
+  },
+  emerald: {
+    name: 'Emerald',
+    colors: {
+      background: '#0f291e',
+      text: '#b8e6d2',
+      border: '#1a4534',
+      highlight: '#2ecc71',
+      button: '#2ecc71',
+      buttonText: '#ffffff',
+      titlebarBg: '#0a1f16',
+      inputBg: '#153726',
+      treeHover: '#1c4e35',
+      modalBg: 'rgba(15, 41, 30, 0.4)'
+    }
+  },
+  sunset: {
+    name: 'Sunset',
+    colors: {
+      background: '#2d1b1e',
+      text: '#ffd5d5',
+      border: '#4a2f32',
+      highlight: '#ff6b6b',
+      button: '#ff6b6b',
+      buttonText: '#ffffff',
+      titlebarBg: '#231316',
+      inputBg: '#382326',
+      treeHover: '#43292c',
+      modalBg: 'rgba(45, 27, 30, 0.4)'
+    }
+  },
+  ocean: {
+    name: 'Ocean',
+    colors: {
+      background: '#0a192f',
+      text: '#c9e2ff',
+      border: '#172a45',
+      highlight: '#64ffda',
+      button: '#64ffda',
+      buttonText: '#0a192f',
+      titlebarBg: '#061120',
+      inputBg: '#112240',
+      treeHover: '#1d3461',
+      modalBg: 'rgba(10, 25, 47, 0.4)'
     }
   },
   solarized: {

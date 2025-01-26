@@ -82,7 +82,6 @@ class FilePromptApp {
         const tree = document.getElementById('fileTree');
         tree.innerHTML = '';
         this.files.clear();
-        this.checkedItems.clear();
         this.expandedFolders.clear();
 
         if (this.currentFolder) {
@@ -130,6 +129,15 @@ class FilePromptApp {
                             <span class="file-name">${displayName}</span>
                         </label>
                     `;
+                    const checkbox = itemElement.querySelector('input[type="checkbox"]');
+                    checkbox.checked = this.checkedItems.has(itemPath);
+                    checkbox.addEventListener('change', () => {
+                        if (checkbox.checked) {
+                            this.checkedItems.add(itemPath);
+                        } else {
+                            this.checkedItems.delete(itemPath);
+                        }
+                    });
                     this.files.set(itemPath, entry.name);
                 }
 
@@ -178,12 +186,12 @@ class FilePromptApp {
         const subContainer = element.querySelector('div');
         if (subContainer.style.display === 'none') {
             this.expandedFolders.add(folderPath);
+            subContainer.innerHTML = '';
             await this.buildTree(folderPath, subContainer, parseInt(element.style.paddingLeft) / 20 + 1);
             subContainer.style.display = 'block';
         } else {
             this.expandedFolders.delete(folderPath);
             subContainer.style.display = 'none';
-            subContainer.innerHTML = '';
         }
     }
 
@@ -227,6 +235,15 @@ class FilePromptApp {
                         <span class="file-name">${fileName}</span>
                     </label>
                 `;
+                const checkbox = fileElement.querySelector('input[type="checkbox"]');
+                checkbox.checked = this.checkedItems.has(filePath);
+                checkbox.addEventListener('change', () => {
+                    if (checkbox.checked) {
+                        this.checkedItems.add(filePath);
+                    } else {
+                        this.checkedItems.delete(filePath);
+                    }
+                });
                 filesContainer.appendChild(fileElement);
             });
 
