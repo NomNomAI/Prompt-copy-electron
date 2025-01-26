@@ -16,6 +16,7 @@ class FilePromptApp {
         this.checkedItems = new Set();
         this.expandedFolders = new Set();
         this.contextMenu = null;
+        this.lastFocusedElement = null;
     }
 
     setupWindowControls() {
@@ -45,12 +46,33 @@ class FilePromptApp {
         document.getElementById('selectFolderBtn').addEventListener('click', () => this.selectFolder());
         document.getElementById('copyBtn').addEventListener('click', () => this.copyToClipboard());
         document.getElementById('searchInput').addEventListener('input', (e) => this.filterTree(e.target.value));
+
+        document.addEventListener('focusin', (e) => {
+            this.lastFocusedElement = e.target;
+        });
+    }
+
+    showNotification(message, isError = false) {
+        const notification = document.createElement('div');
+        notification.className = `notification ${isError ? 'error' : 'success'}`;
+        notification.textContent = message;
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+            notification.classList.add('fade-out');
+            setTimeout(() => notification.remove(), 300);
+        }, 2000);
+    }
+
+    getDisplayName(fullName, maxLength = 30) {
+        const parts = fullName.split('\\');
+        const fileName = parts[parts.length - 1];
+        return fileName.length > maxLength ? fileName.substring(0, maxLength - 3) + '...' : fileName;
     }
 
     async selectFolder() {
         const folderPath = await ipcRenderer.invoke('select-folder');
         if (!folderPath) return;
-
         this.currentFolder = folderPath;
         this.refreshTree();
     }
@@ -82,7 +104,8 @@ class FilePromptApp {
                 itemElement.style.paddingLeft = `${level * 20}px`;
 
                 if (entry.isDirectory()) {
-                    itemElement.innerHTML = `<span class="folder">${entry.name}</span>`;
+                    const displayName = this.getDisplayName(entry.name);
+                    itemElement.innerHTML = `<span class="folder" title="${entry.name}">${displayName}</span>`;
                     const folderSpan = itemElement.querySelector('.folder');
                     folderSpan.addEventListener('click', () => {
                         folderSpan.classList.toggle('expanded');
@@ -99,12 +122,13 @@ class FilePromptApp {
                         folderSpan.classList.add('expanded');
                     }
                 } else {
+                    const displayName = this.getDisplayName(entry.name);
                     itemElement.innerHTML = `
-            <label>
-              <input type="checkbox" data-path="${itemPath}">
-              ${entry.name}
-            </label>
-          `;
+                        <label title="${itemPath}">
+                            <input type="checkbox" data-path="${itemPath}">
+                            <span class="file-name">${displayName}</span>
+                        </label>
+                    `;
                     this.files.set(itemPath, entry.name);
                 }
 
@@ -127,9 +151,9 @@ class FilePromptApp {
         const menu = document.createElement('div');
         menu.className = 'context-menu';
         menu.innerHTML = `
-      <div class="menu-item" data-action="show">Show in Explorer</div>
-      ${!isDirectory ? `<div class="menu-item" data-action="copy">Copy Path</div>` : ''}
-    `;
+            <div class="menu-item" data-action="show">Show in Explorer</div>
+            ${!isDirectory ? `<div class="menu-item" data-action="copy">Copy Path</div>` : ''}
+        `;
 
         menu.style.left = event.pageX + 'px';
         menu.style.top = event.pageY + 'px';
@@ -140,6 +164,7 @@ class FilePromptApp {
                 ipcRenderer.send('show-in-explorer', itemPath);
             } else if (action === 'copy') {
                 navigator.clipboard.writeText(itemPath);
+                this.showNotification('Path copied to clipboard!');
             }
             this.hideContextMenu();
         });
@@ -162,14 +187,73 @@ class FilePromptApp {
     }
 
     filterTree(searchTerm) {
-        const tree = document.getElementById('fileTree');
-        const items = tree.getElementsByTagName('label');
-
-        for (const item of items) {
-            const text = item.textContent.toLowerCase();
-            const match = text.includes(searchTerm.toLowerCase());
-            item.parentElement.style.display = match ? '' : 'none';
+        if (!searchTerm.trim()) {
+            this.refreshTree();
+            return;
         }
+
+        const tree = document.getElementById('fileTree');
+        tree.innerHTML = '';
+
+        const searchResults = this.searchFiles(this.currentFolder, searchTerm.toLowerCase());
+        const groupedResults = new Map();
+
+        searchResults.forEach(filePath => {
+            const dir = path.dirname(filePath);
+            if (!groupedResults.has(dir)) {
+                groupedResults.set(dir, []);
+            }
+            groupedResults.get(dir).push(filePath);
+        });
+
+        groupedResults.forEach((files, dir) => {
+            const relativeDirPath = path.relative(this.currentFolder, dir);
+            const dirElement = document.createElement('div');
+            dirElement.style.paddingLeft = '10px';
+
+            const dirName = this.getDisplayName(relativeDirPath || 'root');
+            dirElement.innerHTML = `<span class="folder">${dirName}</span>`;
+
+            const filesContainer = document.createElement('div');
+            filesContainer.style.paddingLeft = '20px';
+
+            files.forEach(filePath => {
+                const fileName = this.getDisplayName(path.basename(filePath));
+                const fileElement = document.createElement('div');
+                fileElement.innerHTML = `
+                    <label title="${filePath}">
+                        <input type="checkbox" data-path="${filePath}">
+                        <span class="file-name">${fileName}</span>
+                    </label>
+                `;
+                filesContainer.appendChild(fileElement);
+            });
+
+            dirElement.appendChild(filesContainer);
+            tree.appendChild(dirElement);
+        });
+    }
+
+    searchFiles(dir, searchTerm) {
+        const results = [];
+
+        try {
+            const items = window.require('fs').readdirSync(dir, { withFileTypes: true });
+
+            for (const item of items) {
+                const fullPath = path.join(dir, item.name);
+
+                if (item.isDirectory()) {
+                    results.push(...this.searchFiles(fullPath, searchTerm));
+                } else if (item.name.toLowerCase().includes(searchTerm)) {
+                    results.push(fullPath);
+                }
+            }
+        } catch (error) {
+            console.error('Error searching files:', error);
+        }
+
+        return results;
     }
 
     async copyToClipboard() {
@@ -177,35 +261,38 @@ class FilePromptApp {
             .map(cb => cb.dataset.path);
 
         if (checkedFiles.length === 0) {
-            alert('Please select at least one file.');
+            this.showNotification('Please select at least one file.', true);
             return;
         }
 
-        const content = await this.buildClipboardContent(checkedFiles);
-        navigator.clipboard.writeText(content);
-        alert('Content copied to clipboard!');
+        try {
+            const content = await this.buildClipboardContent(checkedFiles);
+            await navigator.clipboard.writeText(content);
+            this.showNotification('Content copied to clipboard!');
+        } catch (error) {
+            console.error('Error copying to clipboard:', error);
+            this.showNotification('Failed to copy content to clipboard.', true);
+        }
     }
 
     async buildClipboardContent(filePaths) {
         const content = [];
-        const promptText = document.getElementById('promptText').value.trim();
+        const promptTextArea = document.getElementById('promptText');
+        const promptText = promptTextArea.value;
+        const selectionStart = promptTextArea.selectionStart;
+        const selectionEnd = promptTextArea.selectionEnd;
 
         if (promptText) {
             let finalPrompt = promptText;
             if (document.getElementById('scriptFixCheck').checked) {
                 finalPrompt += ' send full script with fix';
             }
-            if (document.getElementById('notReactCheck').checked) {
-                finalPrompt += ' This project is not React, fix code given';
-            }
             content.push(`Prompt: ${finalPrompt}\n`);
         }
 
         for (const filePath of filePaths) {
             try {
-                console.log('Reading file:', filePath); // Debug line
                 if (!filePath) continue;
-
                 const fileContent = await ipcRenderer.invoke('read-file', filePath);
                 content.push(`Filename: ${path.basename(filePath)}\nContents:\n${fileContent}\n`);
             } catch (error) {

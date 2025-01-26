@@ -1,4 +1,16 @@
-﻿body {
+﻿:root {
+    --app-bg: var(--theme-bg);
+    --text: var(--theme-text);
+    --border: var(--theme-border);
+    --button-bg: var(--theme-highlight);
+    --button-text: var(--theme-button-text);
+    --input-bg: var(--theme-input-bg);
+    --tree-hover: var(--theme-tree-hover);
+    --titlebar-bg: var(--theme-titlebar-bg);
+    --modal-bg: var(--theme-modal-bg);
+}
+
+body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     margin: 0;
     padding: 0;
@@ -9,40 +21,14 @@
     color: var(--text);
 }
 
-.theme-default {
-    --app-bg: #ffffff;
-    --text: #000000;
-    --border: #e1e1e1;
-    --button-bg: #007aff;
-    --button-text: #ffffff;
-    --input-bg: #ffffff;
-    --tree-hover: #f0f0f0;
-    --titlebar-bg: #f5f5f7;
-    --modal-bg: rgba(0, 0, 0, 0.5);
-}
-
-.theme-neon {
-    --app-bg: #0a0a0a;
-    --text: #00ff00;
-    --border: #00ff00;
-    --button-bg: #ff00ff;
-    --button-text: #000000;
-    --input-bg: #000000;
-    --tree-hover: #001100;
-    --titlebar-bg: #000000;
-    --modal-bg: rgba(0, 255, 0, 0.2);
-}
-
-.theme-cyberpunk {
-    --app-bg: #120458;
-    --text: #00fff9;
-    --border: #ff00a0;
-    --button-bg: #feff00;
-    --button-text: #000000;
-    --input-bg: #090235;
-    --tree-hover: #1a0670;
-    --titlebar-bg: #090235;
-    --modal-bg: rgba(255, 0, 160, 0.2);
+.container {
+    padding: 15px;
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .titlebar {
@@ -50,9 +36,8 @@
     background: var(--titlebar-bg);
     -webkit-app-region: drag;
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     align-items: center;
-    gap: 8px;
     height: 30px;
 }
 
@@ -73,51 +58,42 @@
 }
 
 .settings-icon {
-    margin-right: 8px;
+    margin-left: 8px;
     cursor: pointer;
     -webkit-app-region: no-drag;
     font-size: 14px;
     color: var(--text);
 }
 
-.container {
-    padding: 15px;
-    flex: 1;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
+.prompt-area,
+.search-area {
+    width: 100%;
+    box-sizing: border-box;
 }
 
-.prompt-area {
-    margin-bottom: 15px;
-}
+    textarea,
+    .search-area input {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 8px;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        background: var(--input-bg);
+        color: var(--text);
+        font-size: 14px;
+    }
 
 textarea {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid var(--border);
-    border-radius: 6px;
     resize: vertical;
-    font-size: 14px;
     height: 80px;
-    background: var(--input-bg);
-    color: var(--text);
+    min-height: 60px;
 }
 
 .checkbox-area {
-    margin-bottom: 15px;
+    margin-bottom: 6px;
     display: flex;
     gap: 20px;
-}
-
-.search-area input {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    margin-bottom: 15px;
-    background: var(--input-bg);
-    color: var(--text);
+    flex-wrap: wrap;
 }
 
 .tree-container {
@@ -125,7 +101,7 @@ textarea {
     overflow-y: auto;
     border: 1px solid var(--border);
     border-radius: 6px;
-    padding: 10px;
+    padding: 6px;
     margin-bottom: 15px;
     background: var(--input-bg);
 }
@@ -136,6 +112,7 @@ textarea {
 
 .folder {
     cursor: pointer;
+    user-select: none;
 }
 
     .folder:before {
@@ -165,10 +142,21 @@ button {
     color: var(--button-text);
     font-weight: 500;
     cursor: pointer;
+    transition: opacity 0.2s;
 }
+
+    button:hover {
+        opacity: 0.9;
+    }
+
+    button:active {
+        opacity: 0.8;
+    }
 
 label {
     font-size: 13px;
+    color: var(--text);
+    user-select: none;
 }
 
 .settings-modal {
@@ -191,6 +179,7 @@ label {
     border-radius: 8px;
     min-width: 300px;
     position: relative;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .theme-options {
@@ -207,6 +196,7 @@ label {
     border-radius: 4px;
     cursor: pointer;
     transition: all 0.2s;
+    text-align: left;
 }
 
     .theme-button:hover {
@@ -236,14 +226,15 @@ label {
     background: var(--app-bg);
     border: 1px solid var(--border);
     border-radius: 4px;
-    box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     z-index: 1000;
-    color: var(--text);
+    min-width: 150px;
 }
 
 .menu-item {
     padding: 8px 12px;
     cursor: pointer;
+    transition: background-color 0.2s;
 }
 
     .menu-item:hover {
@@ -252,4 +243,244 @@ label {
 
 input[type="checkbox"] {
     accent-color: var(--button-bg);
+    margin-right: 6px;
 }
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--app-bg);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 4px;
+}
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: var(--button-bg);
+    }
+
+::placeholder {
+    color: var(--text);
+    opacity: 0.5;
+}
+.settings-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--modal-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.settings-content {
+    background: var(--app-bg);
+    border: 1px solid var(--border);
+    padding: 20px;
+    border-radius: 8px;
+    width: 300px;
+    max-width: 90%;
+    position: relative;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.theme-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.theme-button {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border);
+    background: var(--input-bg);
+    color: var(--text);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+    font-size: 14px;
+}
+
+    .theme-button:hover {
+        background: var(--button-bg);
+        color: var(--button-text);
+    }
+
+    .theme-button.active {
+        background: var(--button-bg);
+        color: var(--button-text);
+    }
+
+.close-btn {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    background: none;
+    border: none;
+    color: var(--text);
+    font-size: 20px;
+    cursor: pointer;
+    padding: 5px;
+    line-height: 1;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 46px);
+    padding: 15px;
+    gap: 15px;
+    overflow: hidden;
+}
+
+.tree-container {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+}
+.settings-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--modal-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.settings-content {
+    background: var(--app-bg);
+    border: 1px solid var(--border);
+    padding: 20px;
+    border-radius: 8px;
+    width: 300px;
+    max-width: 90%;
+    position: relative;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.theme-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.theme-button {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border);
+    background: var(--input-bg);
+    color: var(--text);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+    font-size: 14px;
+}
+
+    .theme-button:hover {
+        background: var(--button-bg);
+        color: var(--button-text);
+    }
+
+    .theme-button.active {
+        background: var(--button-bg);
+        color: var(--button-text);
+    }
+
+.close-btn {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    background: none;
+    border: none;
+    color: var(--text);
+    font-size: 20px;
+    cursor: pointer;
+    padding: 5px;
+    line-height: 1;
+}
+
+
+.tree-container {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+}.titlebar {
+    padding: 8px;
+    background: var(--titlebar-bg);
+    -webkit-app-region: drag;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 30px;
+    position: relative;
+}
+
+.titlebar::after {
+    content: 'Prompt Copy';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--text);
+    font-size: 13px;
+    opacity: 0.8;
+    pointer-events: none;
+}
+#fileTree label {
+    display: flex;
+    align-items: center;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#fileTree input[type="checkbox"] {
+    flex-shrink: 0;
+    margin-right: 6px;
+}
+
+.file-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 10px 20px;
+    border-radius: 4px;
+    color: white;
+    opacity: 1;
+    transition: opacity 0.3s;
+    z-index: 1000;
+}
+
+    .notification.success {
+        background-color: #4CAF50;
+    }
+
+    .notification.error {
+        background-color: #f44336;
+    }
+
+    .notification.fade-out {
+        opacity: 0;
+    }
