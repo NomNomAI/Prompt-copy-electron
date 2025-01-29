@@ -8,6 +8,8 @@ class FilePromptApp {
         this.setupEventListeners();
         this.setupWindowControls();
         this.setupContextMenuListener();
+        this.setupTabSystem();
+        this.initializeUI(); // New method to handle initial UI state
     }
 
     setupVariables() {
@@ -18,6 +20,133 @@ class FilePromptApp {
         this.contextMenu = null;
         this.lastFocusedElement = null;
     }
+    initializeUI() {
+        // Hide all UI elements initially
+        const elements = [
+            '.checkbox-area',
+            '.tabs',
+            '.prompt-area'
+        ];
+
+        elements.forEach(selector => {
+            const element = document.querySelector(selector);
+            if (element) {
+                element.classList.remove('visible');
+            }
+        });
+
+        this.showEmptyState();
+    }
+    showEmptyState() {
+        const treeContainer = document.querySelector('.tree-container');
+        const fileTree = document.getElementById('fileTree');
+
+        treeContainer.classList.add('empty');
+        fileTree.innerHTML = `
+        <div class="empty-state-icon">
+            <i class="fas fa-folder fa-3x"></i>
+        </div>
+        <div class="empty-state-text">
+            Select a folder to get started
+        </div>
+    `;
+    }
+
+
+    setupTabSystem() {
+        const tabButtons = document.querySelectorAll('.tab-button');
+
+        // Initialize the checked count
+        this.updateCheckedCount();
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.remove('active'));
+
+                button.classList.add('active');
+                const tabId = button.getAttribute('data-tab');
+                const panel = document.getElementById(tabId + 'Tab');
+                panel.classList.add('active');
+
+                if (tabId === 'checkedFiles') {
+                    this.updateCheckedFilesTab();
+                }
+            });
+        });
+    }
+
+    updateCheckedFilesTab() {
+        const checkedFilesTab = document.getElementById('checkedFilesTab');
+        if (this.checkedItems.size === 0) {
+            checkedFilesTab.innerHTML = '<div class="empty-state">No files selected</div>';
+            return;
+        }
+
+        const container = document.createElement('div');
+
+        Array.from(this.checkedItems).forEach(filePath => {
+            const fileName = this.files.get(filePath) || path.basename(filePath);
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'checked-file-item';
+
+            const nameSpan = document.createElement('span');
+            nameSpan.className = 'checked-file-name';
+            nameSpan.title = filePath;
+            nameSpan.textContent = fileName;
+
+            const removeButton = document.createElement('span');
+            removeButton.className = 'remove-file';
+            removeButton.title = 'Remove file';
+            removeButton.innerHTML = '<i class="fas fa-times"></i>';
+            removeButton.onclick = () => {
+                this.uncheckFile(filePath);
+                // Refresh the file tree to reflect changes
+                this.refreshTree();
+            };
+
+            itemDiv.appendChild(nameSpan);
+            itemDiv.appendChild(removeButton);
+            container.appendChild(itemDiv);
+        });
+
+        checkedFilesTab.innerHTML = '';
+        checkedFilesTab.appendChild(container);
+    }
+    uncheckFile(filePath) {
+        // Remove from the checked items set
+        this.checkedItems.delete(filePath);
+
+        // Find all checkboxes for this file path and uncheck them
+        const checkboxes = document.querySelectorAll(`input[type="checkbox"][data-path="${filePath}"]`);
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = false;
+        });
+
+        // Update both the checked count and the checked files tab
+        this.updateCheckedCount();
+        this.updateCheckedFilesTab();
+    }
+
+
+    updateCheckedCount() {
+        const countElement = document.querySelector('[data-tab="checkedFiles"]');
+        if (countElement) {
+            countElement.textContent = `Checked Files ${this.checkedItems.size}`;
+        }
+    }
+
+    // Modify the handleCheckboxChange method
+    handleCheckboxChange(checkbox, filePath) {
+        if (checkbox.checked) {
+            this.checkedItems.add(filePath);
+        } else {
+            this.checkedItems.delete(filePath);
+        }
+        this.updateCheckedCount();
+        this.updateCheckedFilesTab();
+    }
+
 
     setupWindowControls() {
         document.querySelector('.close').addEventListener('click', () => window.close());
@@ -70,19 +199,30 @@ class FilePromptApp {
         return fileName.length > maxLength ? fileName.substring(0, maxLength - 3) + '...' : fileName;
     }
 
+
     async selectFolder() {
         const folderPath = await ipcRenderer.invoke('select-folder');
-        if (!folderPath) return;
+        if (!folderPath) {
+            this.showEmptyState();
+            return;
+        }
         this.currentFolder = folderPath;
         document.querySelector('.search-area').classList.remove('hidden');
-        this.refreshTree();
+        document.querySelector('.checkbox-area').classList.add('visible');
+        document.querySelector('.tabs').classList.add('visible');
+        document.querySelector('.prompt-area').classList.add('visible'); // Show prompt area
+        await this.refreshTree();
     }
 
     async refreshTree() {
         const tree = document.getElementById('fileTree');
+        const treeContainer = document.querySelector('.tree-container');
         tree.innerHTML = '';
         this.files.clear();
         this.expandedFolders.clear();
+
+        // Remove empty state styling
+        treeContainer.classList.remove('empty');
 
         if (this.currentFolder) {
             await this.buildTree(this.currentFolder, tree, 0);
@@ -137,6 +277,8 @@ class FilePromptApp {
                         } else {
                             this.checkedItems.delete(itemPath);
                         }
+                        this.updateCheckedCount();
+                        this.updateCheckedFilesTab();
                     });
                     this.files.set(itemPath, entry.name);
                 }
@@ -297,8 +439,6 @@ class FilePromptApp {
         const content = [];
         const promptTextArea = document.getElementById('promptText');
         const promptText = promptTextArea.value;
-        const selectionStart = promptTextArea.selectionStart;
-        const selectionEnd = promptTextArea.selectionEnd;
 
         if (promptText) {
             let finalPrompt = promptText;

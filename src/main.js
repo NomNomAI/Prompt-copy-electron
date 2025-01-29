@@ -41,7 +41,7 @@ function createWindow() {
 
     // Clear existing cache on startup
     mainWindow.webContents.session.clearCache();
-
+ mainWindow.webContents.openDevTools();
     mainWindow.loadFile('src/renderer/index.html');
 }
 

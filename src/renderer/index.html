@@ -16,12 +16,13 @@
     </div>
 
     <div class="container">
-        <div class="prompt-area">
+        <!-- This div will be hidden by default -->
+        <div class="initial-hidden prompt-area">
             <label>Prompt:</label>
             <textarea id="promptText"></textarea>
         </div>
 
-        <div class="checkbox-area">
+        <div class="initial-hidden checkbox-area">
             <label>
                 <input type="checkbox" id="scriptFixCheck">
                 Add 'send full script with fix' to prompt
@@ -32,15 +33,40 @@
             <input type="text" id="searchInput" placeholder="Search files...">
         </div>
 
-        <div class="tree-container">
-            <div id="fileTree"></div>
+        <div class="initial-hidden tabs">
+            <button class="tab-button active" data-tab="allFiles">All Files</button>
+            <button class="tab-button" data-tab="checkedFiles">Checked Files 0</button>
+        </div>
+        
+        <div class="tree-container empty">
+            <div class="tab-panel active" id="allFilesTab">
+                <div id="fileTree">
+                    <div class="empty-state-icon">
+                        <i class="fas fa-folder fa-3x"></i>
+                    </div>
+                    <div class="empty-state-text">
+                        Select a folder to get started
+                    </div>
+                </div>
+            </div>
+            <div class="tab-panel" id="checkedFilesTab">
+                <!-- Checked files will be displayed here -->
+            </div>
         </div>
 
         <div class="button-area">
-            <button id="selectFolderBtn">Select Folder</button>
+            <button id="selectFolderBtn">
+                <i class="fas fa-folder"></i>
+                Select Folder
+            </button>
             <button id="copyBtn">Copy</button>
         </div>
     </div>
+
+    <div class="footer">
+        Made with <span class="heart">♥</span> <a href="https://nomnomai.org" target="_blank">Nom Nom</a>
+    </div>
+
     <script src="index.js"></script>
 </body>
 </html>

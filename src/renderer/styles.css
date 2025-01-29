@@ -492,5 +492,338 @@ input[type="checkbox"] {
 
     .search-area.hidden {
         display: none;
+     
         opacity: 0;
     }
+.tabs {
+    display: flex;
+    margin-bottom: 15px;
+    border-bottom: 1px solid var(--border);
+}
+
+.tab-button {
+    padding: 8px 24px;
+    background: transparent;
+    color: var(--text);
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    opacity: 0.7;
+    position: relative;
+    transition: opacity 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.checked-count {
+    font-size: 12px;
+    opacity: 0.7;
+    color: var(--text);
+}
+
+.tab-button:hover {
+    opacity: 0.9;
+}
+
+.tab-button.active {
+    opacity: 1;
+    color: var(--button-bg);
+}
+
+    .tab-button.active::after {
+        content: '';
+        position: absolute;
+        bottom: -1px;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: var(--button-bg);
+    }
+
+.tab-panel {
+    display: none;
+    flex: 1;
+    overflow-y: auto;
+    min-height: 200px;
+}
+
+    .tab-panel.active {
+        display: block;
+    }
+
+#checkedFilesTab .checked-file-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    margin: 4px 0;
+    border-radius: 4px;
+    background: var(--input-bg);
+    transition: background-color 0.2s;
+}
+
+    #checkedFilesTab .checked-file-item:hover {
+        background: var(--tree-hover);
+    }
+
+#checkedFilesTab .checked-file-name {
+    flex: 1;
+    margin-right: 12px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#checkedFilesTab .remove-file {
+    padding: 4px;
+    border-radius: 4px;
+    cursor: pointer;
+    color: var(--text);
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+    #checkedFilesTab .remove-file:hover {
+        opacity: 1;
+        color: var(--button-bg);
+    }
+
+#checkedFilesTab .empty-state {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    min-height: 150px;
+    color: var(--text);
+    opacity: 0.5;
+    font-size: 14px;
+}
+# Add this to the styles.css file:
+
+.tree-container {
+    flex: 1;
+    overflow-y: auto;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px;
+    margin-bottom: 15px;
+    background: var(--input-bg);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 300px;
+}
+
+.empty-state-icon {
+    color: var(--text);
+    opacity: 0.3;
+    margin-bottom: 15px;
+    width: 48px;
+    height: 48px;
+}
+
+.empty-state-text {
+    color: var(--text);
+    opacity: 0.5;
+    font-size: 16px;
+}
+
+.footer {
+    text-align: center;
+    padding: 10px;
+    color: var(--text);
+    opacity: 0.7;
+    font-size: 13px;
+}
+
+    .footer a {
+        color: var(--text);
+        text-decoration: none;
+    }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+.heart {
+    color: #ff6b6b;
+    display: inline-block;
+    margin: 0 2px;
+}
+.checkbox-area {
+    margin-bottom: 6px;
+    display: none; /* Hidden by default */
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+    .checkbox-area.visible {
+        display: flex; /* Will be shown when folder is selected */
+    }
+.tabs {
+    display: none; /* Hidden by default */
+    margin-bottom: 15px;
+    border-bottom: 1px solid var(--border);
+}
+
+    .tabs.visible {
+        display: flex; /* Will be shown when folder is selected */
+    }
+.tree-container {
+    flex: 1;
+    overflow-y: auto;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px;
+    margin-bottom: 15px;
+    background: var(--input-bg);
+}
+
+    /* Empty state specific styles */
+    .tree-container.empty {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+#fileTree {
+    width: 100%;
+}
+
+/* Empty state specific styles */
+.tree-container.empty #fileTree {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.empty-state-icon {
+    color: var(--text);
+    opacity: 0.3;
+    margin-bottom: 15px;
+}
+
+.empty-state-text {
+    color: var(--text);
+    opacity: 0.5;
+    font-size: 16px;
+    text-align: center;
+}
+
+/* File tree specific styles */
+.folder {
+    cursor: pointer;
+    user-select: none;
+}
+
+    .folder:before {
+        content: '▶';
+        display: inline-block;
+        margin-right: 5px;
+        font-size: 10px;
+        transition: transform 0.2s;
+    }
+
+    .folder.expanded:before {
+        transform: rotate(90deg);
+    }
+/* Initial hidden elements */
+.prompt-area {
+    display: none;
+}
+
+    .prompt-area.visible {
+        display: block;
+    }
+
+.checkbox-area {
+    display: none;
+}
+
+    .checkbox-area.visible {
+        display: flex;
+    }
+
+.tabs {
+    display: none;
+}
+
+    .tabs.visible {
+        display: flex;
+    }
+
+/* Tree container styles */
+.tree-container {
+    flex: 1;
+    overflow-y: auto;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px;
+    margin-bottom: 15px;
+    background: var(--input-bg);
+}
+
+    /* Empty state styles */
+    .tree-container.empty {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+#fileTree {
+    width: 100%;
+}
+
+.tree-container.empty #fileTree {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* File tree specific styles */
+#fileTree div {
+    padding: 2px 0;
+}
+
+.folder {
+    cursor: pointer;
+    user-select: none;
+    color: var(--text);
+}
+
+    .folder:before {
+        content: '▶';
+        display: inline-block;
+        margin-right: 5px;
+        font-size: 10px;
+        transition: transform 0.2s;
+    }
+
+    .folder.expanded:before {
+        transform: rotate(90deg);
+    }
+
+.file-name {
+    color: var(--text);
+    opacity: 0.8;
+}
+
+/* Empty state elements */
+.empty-state-icon {
+    color: var(--text);
+    opacity: 0.3;
+    margin-bottom: 15px;
+}
+
+.empty-state-text {
+    color: var(--text);
+    opacity: 0.5;
+    font-size: 16px;
+    text-align: center;
+}
