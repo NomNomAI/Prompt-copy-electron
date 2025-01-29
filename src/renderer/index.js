@@ -47,6 +47,9 @@ class FilePromptApp {
         const treeContainer = document.querySelector('.tree-container');
         const fileTree = document.getElementById('fileTree');
 
+        // Hide the search area when showing empty state
+        document.querySelector('.search-area').classList.add('hidden');
+
         treeContainer.classList.add('empty');
         fileTree.innerHTML = `
         <div class="empty-state-button" onclick="document.getElementById('selectFolderBtn').click()">
@@ -215,11 +218,16 @@ class FilePromptApp {
             return;
         }
         this.currentFolder = folderPath;
+
+        // Remove hidden class from search area
         document.querySelector('.search-area').classList.remove('hidden');
+
+        // Show other UI elements
         document.querySelector('.checkbox-area').classList.add('visible');
         document.querySelector('.tabs').classList.add('visible');
         document.querySelector('.prompt-area').classList.add('visible');
-        document.getElementById('copyBtn').classList.add('visible'); // Add this line
+        document.getElementById('copyBtn').classList.add('visible');
+
         await this.refreshTree();
     }
 
