@@ -35,6 +35,12 @@ class FilePromptApp {
             }
         });
 
+        // Hide copy button
+        const copyBtn = document.getElementById('copyBtn');
+        if (copyBtn) {
+            copyBtn.classList.remove('visible');
+        }
+
         this.showEmptyState();
     }
     showEmptyState() {
@@ -43,11 +49,13 @@ class FilePromptApp {
 
         treeContainer.classList.add('empty');
         fileTree.innerHTML = `
-        <div class="empty-state-icon">
-            <i class="fas fa-folder fa-3x"></i>
-        </div>
-        <div class="empty-state-text">
-            Select a folder to get started
+        <div class="empty-state-button" onclick="document.getElementById('selectFolderBtn').click()">
+            <div class="empty-state-icon">
+                <i class="fas fa-folder"></i>
+            </div>
+            <div class="empty-state-text">
+                Select a folder to get started
+            </div>
         </div>
     `;
     }
@@ -210,7 +218,8 @@ class FilePromptApp {
         document.querySelector('.search-area').classList.remove('hidden');
         document.querySelector('.checkbox-area').classList.add('visible');
         document.querySelector('.tabs').classList.add('visible');
-        document.querySelector('.prompt-area').classList.add('visible'); // Show prompt area
+        document.querySelector('.prompt-area').classList.add('visible');
+        document.getElementById('copyBtn').classList.add('visible'); // Add this line
         await this.refreshTree();
     }
 

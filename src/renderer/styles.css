@@ -10,6 +10,7 @@
     --modal-bg: var(--theme-modal-bg);
 }
 
+/* Base Styles */
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     margin: 0;
@@ -21,16 +22,20 @@ body {
     color: var(--text);
 }
 
+/* Layout */
 .container {
     padding: 15px;
     flex: 1;
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    gap: 15px;
+    height: calc(100vh - 46px);
     max-width: 100%;
     box-sizing: border-box;
 }
 
+/* Title Bar */
 .titlebar {
     padding: 8px;
     background: var(--titlebar-bg);
@@ -39,7 +44,19 @@ body {
     justify-content: space-between;
     align-items: center;
     height: 30px;
+    position: relative;
 }
+
+    .titlebar::after {
+        content: 'Prompt Copy';
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        color: var(--text);
+        font-size: 13px;
+        opacity: 0.8;
+        pointer-events: none;
+    }
 
 .window-controls {
     display: flex;
@@ -65,11 +82,24 @@ body {
     color: var(--text);
 }
 
+/* Input Areas */
 .prompt-area,
-.search-area {
+.search-area,
+.checkbox-area,
+.tabs {
     width: 100%;
     box-sizing: border-box;
+    display: none;
 }
+
+    .prompt-area.visible,
+    .checkbox-area.visible {
+        display: block;
+    }
+
+    .tabs.visible {
+        display: flex;
+    }
 
     textarea,
     .search-area input {
@@ -89,15 +119,10 @@ textarea {
     min-height: 60px;
 }
 
-.checkbox-area {
-    margin-bottom: 6px;
-    display: flex;
-    gap: 20px;
-    flex-wrap: wrap;
-}
-
+/* Tree Container */
 .tree-container {
     flex: 1;
+    min-height: 300px;
     overflow-y: auto;
     border: 1px solid var(--border);
     border-radius: 6px;
@@ -106,13 +131,29 @@ textarea {
     background: var(--input-bg);
 }
 
+    .tree-container.empty {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
 #fileTree {
+    width: 100%;
     font-size: 13px;
 }
 
+.tree-container.empty #fileTree {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* File Tree Elements */
 .folder {
     cursor: pointer;
     user-select: none;
+    color: var(--text);
 }
 
     .folder:before {
@@ -127,380 +168,28 @@ textarea {
         transform: rotate(90deg);
     }
 
-.button-area {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    padding-bottom: 10px;
-}
-
-button {
-    padding: 8px 20px;
-    border: none;
-    border-radius: 6px;
-    background: var(--button-bg);
-    color: var(--button-text);
-    font-weight: 500;
-    cursor: pointer;
-    transition: opacity 0.2s;
-}
-
-    button:hover {
-        opacity: 0.9;
-    }
-
-    button:active {
-        opacity: 0.8;
-    }
-
-label {
-    font-size: 13px;
+.file-name {
     color: var(--text);
-    user-select: none;
+    opacity: 0.8;
 }
 
-.settings-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: var(--modal-bg);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-}
-
-.settings-content {
-    background: var(--app-bg);
-    border: 1px solid var(--border);
-    padding: 20px;
-    border-radius: 8px;
-    min-width: 300px;
-    position: relative;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.theme-options {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.theme-button {
-    padding: 10px;
-    border: 1px solid var(--border);
-    background: transparent;
+/* Empty State */
+.empty-state-icon {
     color: var(--text);
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.2s;
-    text-align: left;
+    opacity: 0.3;
+    margin-bottom: 15px;
+    width: 48px;
+    height: 48px;
 }
 
-    .theme-button:hover {
-        background: var(--button-bg);
-        color: var(--button-text);
-    }
-
-    .theme-button.active {
-        background: var(--button-bg);
-        color: var(--button-text);
-    }
-
-.close-btn {
-    position: absolute;
-    right: 10px;
-    top: 10px;
-    background: none;
-    border: none;
-    color: var(--text);
-    font-size: 20px;
-    cursor: pointer;
-    padding: 5px;
-}
-
-.context-menu {
-    position: fixed;
-    background: var(--app-bg);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    z-index: 1000;
-    min-width: 150px;
-}
-
-.menu-item {
-    padding: 8px 12px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-    .menu-item:hover {
-        background: var(--tree-hover);
-    }
-
-input[type="checkbox"] {
-    accent-color: var(--button-bg);
-    margin-right: 6px;
-}
-
-::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-}
-
-::-webkit-scrollbar-track {
-    background: var(--app-bg);
-}
-
-::-webkit-scrollbar-thumb {
-    background: var(--border);
-    border-radius: 4px;
-}
-
-    ::-webkit-scrollbar-thumb:hover {
-        background: var(--button-bg);
-    }
-
-::placeholder {
+.empty-state-text {
     color: var(--text);
     opacity: 0.5;
-}
-.settings-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: var(--modal-bg);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
+    font-size: 16px;
+    text-align: center;
 }
 
-.settings-content {
-    background: var(--app-bg);
-    border: 1px solid var(--border);
-    padding: 20px;
-    border-radius: 8px;
-    width: 300px;
-    max-width: 90%;
-    position: relative;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.theme-options {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-top: 15px;
-}
-
-.theme-button {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid var(--border);
-    background: var(--input-bg);
-    color: var(--text);
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.2s;
-    text-align: left;
-    font-size: 14px;
-}
-
-    .theme-button:hover {
-        background: var(--button-bg);
-        color: var(--button-text);
-    }
-
-    .theme-button.active {
-        background: var(--button-bg);
-        color: var(--button-text);
-    }
-
-.close-btn {
-    position: absolute;
-    right: 10px;
-    top: 10px;
-    background: none;
-    border: none;
-    color: var(--text);
-    font-size: 20px;
-    cursor: pointer;
-    padding: 5px;
-    line-height: 1;
-}
-
-.container {
-    display: flex;
-    flex-direction: column;
-    height: calc(100vh - 46px);
-    padding: 15px;
-    gap: 15px;
-    overflow: hidden;
-}
-
-.tree-container {
-    flex: 1;
-    min-height: 0;
-    overflow-y: auto;
-}
-.settings-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: var(--modal-bg);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-}
-
-.settings-content {
-    background: var(--app-bg);
-    border: 1px solid var(--border);
-    padding: 20px;
-    border-radius: 8px;
-    width: 300px;
-    max-width: 90%;
-    position: relative;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.theme-options {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-top: 15px;
-}
-
-.theme-button {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid var(--border);
-    background: var(--input-bg);
-    color: var(--text);
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.2s;
-    text-align: left;
-    font-size: 14px;
-}
-
-    .theme-button:hover {
-        background: var(--button-bg);
-        color: var(--button-text);
-    }
-
-    .theme-button.active {
-        background: var(--button-bg);
-        color: var(--button-text);
-    }
-
-.close-btn {
-    position: absolute;
-    right: 10px;
-    top: 10px;
-    background: none;
-    border: none;
-    color: var(--text);
-    font-size: 20px;
-    cursor: pointer;
-    padding: 5px;
-    line-height: 1;
-}
-
-
-.tree-container {
-    flex: 1;
-    min-height: 0;
-    overflow-y: auto;
-}.titlebar {
-    padding: 8px;
-    background: var(--titlebar-bg);
-    -webkit-app-region: drag;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 30px;
-    position: relative;
-}
-
-.titlebar::after {
-    content: 'Prompt Copy';
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    color: var(--text);
-    font-size: 13px;
-    opacity: 0.8;
-    pointer-events: none;
-}
-#fileTree label {
-    display: flex;
-    align-items: center;
-    max-width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-#fileTree input[type="checkbox"] {
-    flex-shrink: 0;
-    margin-right: 6px;
-}
-
-.file-name {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-.notification {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    padding: 10px 20px;
-    border-radius: 4px;
-    color: white;
-    opacity: 1;
-    transition: opacity 0.3s;
-    z-index: 1000;
-}
-
-    .notification.success {
-        background-color: #4CAF50;
-    }
-
-    .notification.error {
-        background-color: #f44336;
-    }
-
-    .notification.fade-out {
-        opacity: 0;
-    }
-.search-area {
-    width: 100%;
-    box-sizing: border-box;
-    transition: opacity 0.3s ease-out;
-}
-
-    .search-area.hidden {
-        display: none;
-     
-        opacity: 0;
-    }
-.tabs {
-    display: flex;
-    margin-bottom: 15px;
-    border-bottom: 1px solid var(--border);
-}
-
+/* Tabs */
 .tab-button {
     padding: 8px 24px;
     background: transparent;
@@ -516,30 +205,24 @@ input[type="checkbox"] {
     gap: 8px;
 }
 
-.checked-count {
-    font-size: 12px;
-    opacity: 0.7;
-    color: var(--text);
-}
-
-.tab-button:hover {
-    opacity: 0.9;
-}
-
-.tab-button.active {
-    opacity: 1;
-    color: var(--button-bg);
-}
-
-    .tab-button.active::after {
-        content: '';
-        position: absolute;
-        bottom: -1px;
-        left: 0;
-        right: 0;
-        height: 2px;
-        background: var(--button-bg);
+    .tab-button:hover {
+        opacity: 0.9;
     }
+
+    .tab-button.active {
+        opacity: 1;
+        color: var(--button-bg);
+    }
+
+        .tab-button.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--button-bg);
+        }
 
 .tab-panel {
     display: none;
@@ -552,6 +235,7 @@ input[type="checkbox"] {
         display: block;
     }
 
+/* Checked Files Tab */
 #checkedFilesTab .checked-file-item {
     display: flex;
     align-items: center;
@@ -599,37 +283,35 @@ input[type="checkbox"] {
     opacity: 0.5;
     font-size: 14px;
 }
-# Add this to the styles.css file:
 
-.tree-container {
-    flex: 1;
-    overflow-y: auto;
-    border: 1px solid var(--border);
+/* Buttons */
+button {
+    padding: 8px 20px;
+    border: none;
     border-radius: 6px;
-    padding: 6px;
-    margin-bottom: 15px;
-    background: var(--input-bg);
+    background: var(--button-bg);
+    color: var(--button-text);
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+    button:hover {
+        opacity: 0.9;
+    }
+
+    button:active {
+        opacity: 0.8;
+    }
+
+.button-area {
     display: flex;
-    flex-direction: column;
     justify-content: center;
-    align-items: center;
-    min-height: 300px;
+    gap: 10px;
+    padding-bottom: 10px;
 }
 
-.empty-state-icon {
-    color: var(--text);
-    opacity: 0.3;
-    margin-bottom: 15px;
-    width: 48px;
-    height: 48px;
-}
-
-.empty-state-text {
-    color: var(--text);
-    opacity: 0.5;
-    font-size: 16px;
-}
-
+/* Footer */
 .footer {
     text-align: center;
     padding: 10px;
@@ -652,27 +334,108 @@ input[type="checkbox"] {
     display: inline-block;
     margin: 0 2px;
 }
-.checkbox-area {
-    margin-bottom: 6px;
-    display: none; /* Hidden by default */
-    gap: 20px;
-    flex-wrap: wrap;
+
+/* Settings Modal */
+.settings-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--modal-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
 }
 
-    .checkbox-area.visible {
-        display: flex; /* Will be shown when folder is selected */
-    }
-.tabs {
-    display: none; /* Hidden by default */
-    margin-bottom: 15px;
-    border-bottom: 1px solid var(--border);
+.settings-content {
+    background: var(--app-bg);
+    border: 1px solid var(--border);
+    padding: 20px;
+    border-radius: 8px;
+    width: 300px;
+    max-width: 90%;
+    position: relative;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-    .tabs.visible {
-        display: flex; /* Will be shown when folder is selected */
+.theme-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.theme-button {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border);
+    background: var(--input-bg);
+    color: var(--text);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+    font-size: 14px;
+}
+
+/* Utility Classes */
+.close-btn {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    background: none;
+    border: none;
+    color: var(--text);
+    font-size: 20px;
+    cursor: pointer;
+    padding: 5px;
+    line-height: 1;
+}
+
+input[type="checkbox"] {
+    accent-color: var(--button-bg);
+    margin-right: 6px;
+}
+
+/* Scrollbar Styles */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--app-bg);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 4px;
+}
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: var(--button-bg);
     }
+
+::placeholder {
+    color: var(--text);
+    opacity: 0.5;
+}
+.container {
+    padding: 15px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    max-width: 100%;
+    box-sizing: border-box;
+    height: calc(100vh - 46px);
+    position: relative; /* Add this */
+}
+
 .tree-container {
     flex: 1;
+    min-height: 0; /* Change from 300px to 0 */
     overflow-y: auto;
     border: 1px solid var(--border);
     border-radius: 6px;
@@ -681,144 +444,105 @@ input[type="checkbox"] {
     background: var(--input-bg);
 }
 
-    /* Empty state specific styles */
-    .tree-container.empty {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-#fileTree {
-    width: 100%;
+.button-area {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    padding-bottom: 10px;
+    margin-top: auto; /* Add this */
 }
 
-/* Empty state specific styles */
-.tree-container.empty #fileTree {
-    text-align: center;
+/* Ensure empty state stays centered */
+.tree-container.empty {
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
+    min-height: 200px;
 }
-
-.empty-state-icon {
-    color: var(--text);
-    opacity: 0.3;
-    margin-bottom: 15px;
-}
-
-.empty-state-text {
-    color: var(--text);
-    opacity: 0.5;
-    font-size: 16px;
-    text-align: center;
-}
-
-/* File tree specific styles */
-.folder {
-    cursor: pointer;
-    user-select: none;
-}
-
-    .folder:before {
-        content: '▶';
-        display: inline-block;
-        margin-right: 5px;
-        font-size: 10px;
-        transition: transform 0.2s;
-    }
-
-    .folder.expanded:before {
-        transform: rotate(90deg);
-    }
-/* Initial hidden elements */
-.prompt-area {
-    display: none;
-}
-
-    .prompt-area.visible {
-        display: block;
-    }
-
-.checkbox-area {
-    display: none;
-}
-
-    .checkbox-area.visible {
-        display: flex;
-    }
-
-.tabs {
-    display: none;
-}
-
-    .tabs.visible {
-        display: flex;
-    }
-
-/* Tree container styles */
-.tree-container {
-    flex: 1;
-    overflow-y: auto;
-    border: 1px solid var(--border);
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 10px 20px;
     border-radius: 6px;
-    padding: 6px;
-    margin-bottom: 15px;
-    background: var(--input-bg);
+    color: white;
+    font-size: 14px;
+    opacity: 1;
+    transform: translateX(0);
+    transition: all 0.3s ease-in-out;
+    z-index: 2000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-    /* Empty state styles */
-    .tree-container.empty {
-        display: flex;
-        align-items: center;
-        justify-content: center;
+    .notification.success {
+        background-color: #10b981;
+        border-left: 4px solid #059669;
     }
 
-#fileTree {
-    width: 100%;
+    .notification.error {
+        background-color: #ef4444;
+        border-left: 4px solid #dc2626;
+    }
+
+    .notification.fade-out {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+
+/* Animation for new notifications */
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
 }
 
-.tree-container.empty #fileTree {
-    text-align: center;
+.notification {
+    animation: slideIn 0.3s ease-out;
+}
+#copyBtn {
+    display: none;
+}
+
+    #copyBtn.visible {
+        display: inline-flex;
+    }
+
+/* Update button area to maintain spacing */
+.button-area {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    padding-bottom: 10px;
+    margin-top: auto;
+}
+/* Add to CSS */
+.empty-state-button {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-}
-
-/* File tree specific styles */
-#fileTree div {
-    padding: 2px 0;
-}
-
-.folder {
+    padding: 20px;
     cursor: pointer;
-    user-select: none;
+    border-radius: 8px;
+    transition: background-color 0.2s;
+    text-decoration: none;
     color: var(--text);
 }
 
-    .folder:before {
-        content: '▶';
-        display: inline-block;
-        margin-right: 5px;
-        font-size: 10px;
-        transition: transform 0.2s;
+    .empty-state-button:hover {
+        background: rgba(255, 255, 255, 0.05);
     }
 
-    .folder.expanded:before {
-        transform: rotate(90deg);
-    }
-
-.file-name {
-    color: var(--text);
-    opacity: 0.8;
-}
-
-/* Empty state elements */
 .empty-state-icon {
     color: var(--text);
     opacity: 0.3;
     margin-bottom: 15px;
+    font-size: 48px;
 }
 
 .empty-state-text {
@@ -826,4 +550,15 @@ input[type="checkbox"] {
     opacity: 0.5;
     font-size: 16px;
     text-align: center;
+    font-weight: 500;
+}
+
+/* Center the empty state content */
+.tree-container.empty #fileTree {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    min-height: 300px;
 }
